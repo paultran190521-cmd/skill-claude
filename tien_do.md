@@ -12,14 +12,15 @@
 * [x] Soạn thảo `README.md` trang chủ chuyên nghiệp, đầy đủ bảng tra cứu 9 nhóm chuyên đề.
 * [x] Soạn thảo `index.md` đóng vai trò bản đồ chỉ mục nhanh cho toàn bộ repo.
 * [x] Lưu trữ tài liệu kịch bản chi tiết tại `nghien_ai_reels_summary.md`.
+* [x] Cấu hình tài khoản Git và khởi tạo commit gốc.
+* [x] Đẩy (push) thành công toàn bộ mã nguồn lên nhánh `main` của repository GitHub `https://github.com/paultran190521-cmd/skill-claude`.
 
 ## 3. CÁC VIỆC TIẾP THEO [ ]
-* [ ] Kiểm tra và cấu hình tài khoản Git (`user.name`, `user.email`).
-* [ ] Commit và đẩy (push) toàn bộ dữ liệu lên nhánh `main` của repository GitHub `paultran190521-cmd/skill-claude`.
-* [ ] Kiểm tra xác nhận trạng thái hiển thị trên GitHub sau khi đẩy mã.
+* [ ] Bổ sung các template cấu hình mẫu `CLAUDE.md` và các skill con trong thư mục `.claude/skills/` khi người dùng yêu cầu.
+* [ ] Cập nhật thêm các công cụ mới từ các đợt phát hành video tiếp theo của cộng đồng.
 
 ## 4. TỆP TIN QUAN TRỌNG & GHI CHÚ
 * `README.md`: Trang chủ hiển thị của GitHub Repository.
 * `index.md`: Tệp chỉ mục tra cứu nhanh theo yêu cầu người dùng.
 * `nghien_ai_reels_summary.md`: Toàn văn kịch bản và phân tích kỹ thuật hơn 40 video Reels.
-* `tien_do.md`: Tệp đồng bộ tiến độ tự động.
+* `tien_do.md`: Tệp đồng bộ tiến độ tự động (tuân thủ quy tắc 11).
