@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KHO LƯU TRỮ SKILL CLAUDE & AI AGENTS THỰC CHIẾN</title>
+  <meta name="description" content="Cổng tra cứu hơn 35+ kho mã nguồn GitHub và kỹ năng Claude Code, tự động hóa video, tối ưu token, browser automation và multi-agent hàng đầu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Montserrat:wght@700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#1992b0',
+              'teal-hover': '#157b95',
+              'teal-light': '#21b2d6',
+              orange: '#ff9500',
+              'orange-hover': '#e08300',
+              dark: '#080e11',
+              card: '#0f1c22',
+              'card-border': '#17303a',
+              muted: '#7a9ea8',
+              surface: '#13252d',
+            }
+          },
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            heading: ['Montserrat', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'beam': 'beam 3s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            beam: {
+              '0%': { strokeDashoffset: '100' },
+              '100%': { strokeDashoffset: '0' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #080e11;
+      color: #f4f9fa;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Radial spotlight effect */
+    .spotlight-card {
+      position: relative;
+      background: radial-gradient(800px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(25, 146, 176, 0.15), transparent 40%),
+                  #0f1c22;
+      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .spotlight-card:hover {
+      border-color: rgba(25, 146, 176, 0.6);
+      box-shadow: 0 10px 30px -10px rgba(25, 146, 176, 0.2);
+    }
+    
+    /* Top star glowing badge */
+    .top-star-halo {
+      position: relative;
+    }
+    .top-star-halo::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, #1992b0, #ff9500, #1992b0);
+      z-index: -1;
+      opacity: 0.6;
+      filter: blur(4px);
+    }
+
+    /* Moving border button */
+    .btn-moving-border {
+      position: relative;
+      background: #0f1c22;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn-moving-border::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, transparent, transparent, #ff9500);
+      animation: rotate 4s linear infinite;
+      z-index: -2;
+    }
+    .btn-moving-border::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: #0f1c22;
+      border-radius: inherit;
+      z-index: -1;
+    }
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080e11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #17303a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1992b0;
+    }
+  </style>
+</head>
+<body class="selection:bg-brand-teal selection:text-white">
+
+  <!-- Canvas Background for dynamic beams -->
+  <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+  <!-- Section 1: Floating Navbar -->
+  <header class="fixed top-4 inset-x-0 z-50 flex justify-center px-4">
+    <nav class="w-full max-w-6xl bg-brand-card/85 backdrop-blur-md border border-brand-card-border/80 px-4 py-2.5 rounded-full flex items-center justify-between shadow-2xl transition-all">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-teal to-brand-orange flex items-center justify-center font-heading font-black text-white text-lg shadow-md shadow-brand-teal/20">
+          C
+        </div>
+        <span class="font-heading font-bold text-sm tracking-wide text-white hidden sm:inline">SKILL CLAUDE <span class="text-brand-teal text-xs font-normal">HUB</span></span>
+      </div>
+
+      <div class="hidden md:flex items-center space-x-6 text-xs text-brand-muted font-medium">
+        <a href="#danh-sach-tools" class="hover:text-brand-teal transition-colors">Công cụ</a>
+        <a href="#so-do-quy-trinh" class="hover:text-brand-teal transition-colors">Quy trình</a>
+        <a href="#huong-dan-cai-dat" class="hover:text-brand-teal transition-colors">Cài đặt</a>
+        <a href="https://github.com/paultran190521-cmd/skill-claude" target="_blank" class="hover:text-brand-teal transition-colors flex items-center gap-1">
+          <span>GitHub</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <a href="https://github.com/paultran190521-cmd/skill-claude" target="_blank" class="btn-moving-border inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-semibold text-brand-orange hover:text-white transition-all">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Star repo</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Section 2: Hero Section -->
+  <section class="relative pt-36 pb-16 md:pt-44 md:pb-24 px-4 z-10 overflow-hidden flex flex-col items-center text-center">
+    <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-brand-surface border border-brand-card-border text-xs text-brand-teal mb-6 shadow-inner">
+      <span class="w-2 h-2 rounded-full bg-brand-orange animate-ping"></span>
+      <span>Cổng tri thức AI Agents mã nguồn mở</span>
+    </div>
+
+    <!-- Main Title: Strict Rule 5 ALL CAPS (5-8 words per line) -->
+    <h1 class="font-heading font-black text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white max-w-4xl leading-[1.15] mb-4">
+      KHO LƯU TRỮ SKILL CLAUDE & AI AGENTS THỰC CHIẾN
+    </h1>
+    
+    <p class="text-brand-muted text-sm sm:text-base max-w-2xl font-normal leading-relaxed mb-8">
+      Tổng hợp hơn <strong class="text-white">35+ kho mã nguồn GitHub</strong> tuyển chọn từ kênh Nghiền AI: tự động hóa video, trợ lý lập trình, tiết kiệm 80% token và kiến trúc đa tác tử.
+    </p>
+
+    <!-- Live Search Bar -->
+    <div class="w-full max-w-2xl relative mb-10">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-muted">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <input type="text" id="search-input" placeholder="Tìm kiếm công cụ theo tên, chức năng hoặc từ khóa (ví dụ: Remotion, Graphify, Claude...)" 
+             class="w-full pl-11 pr-28 py-3.5 bg-brand-card border border-brand-card-border rounded-2xl text-sm text-white placeholder-brand-muted/70 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 transition-all shadow-xl">
+      <div class="absolute inset-y-0 right-2 flex items-center">
+        <span id="results-count" class="text-xs px-2.5 py-1 rounded-lg bg-brand-surface text-brand-muted border border-brand-card-border">
+          35 công cụ
+        </span>
+      </div>
+    </div>
+
+    <!-- Section 3: Stats Counter Bar -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl">
+      <div class="p-4 rounded-xl bg-brand-card/60 border border-brand-card-border/60">
+        <div class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-teal">35+</div>
+        <div class="text-xs text-brand-muted mt-1">Kho mã nguồn GitHub</div>
+      </div>
+      <div class="p-4 rounded-xl bg-brand-card/60 border border-brand-card-border/60">
+        <div class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-orange">800K+</div>
+        <div class="text-xs text-brand-muted mt-1">Tổng lượt sao GitHub</div>
+      </div>
+      <div class="p-4 rounded-xl bg-brand-card/60 border border-brand-card-border/60">
+        <div class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-teal">9 Nhóm</div>
+        <div class="text-xs text-brand-muted mt-1">Chuyên đề ứng dụng</div>
+      </div>
+      <div class="p-4 rounded-xl bg-brand-card/60 border border-brand-card-border/60">
+        <div class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-orange">100%</div>
+        <div class="text-xs text-brand-muted mt-1">Mã nguồn mở miễn phí</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4 & 5: Category Filters and Tools Bento Grid -->
+  <section id="danh-sach-tools" class="max-w-7xl mx-auto px-4 py-12 z-10 relative">
+    
+    <!-- Section Heading: ALL CAPS -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-brand-card-border">
+      <div>
+        <h2 class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
+          HỆ THỐNG CÔNG CỤ & KHO MÃ NGUỒN MỞ
+        </h2>
+        <p class="text-xs sm:text-sm text-brand-muted">
+          Bấm chọn danh mục bên dưới để lọc nhanh các công cụ theo mục đích sử dụng.
+        </p>
+      </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar text-xs font-medium">
+      <button data-filter="all" class="filter-btn px-4 py-2 rounded-xl bg-brand-teal text-white border border-brand-teal transition-all whitespace-nowrap shadow-md shadow-brand-teal/20">
+        Tất cả (35)
+      </button>
+      <button data-filter="video" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Dựng video tự động
+      </button>
+      <button data-filter="coding" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Coding agents
+      </button>
+      <button data-filter="token" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Tối ưu token & bộ nhớ
+      </button>
+      <button data-filter="browser" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Browser automation
+      </button>
+      <button data-filter="local" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Mô hình local offline
+      </button>
+      <button data-filter="ui" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Thiết kế UI có gu
+      </button>
+      <button data-filter="data" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Dữ liệu & Reverse API
+      </button>
+      <button data-filter="selfhost" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Ứng dụng tự host
+      </button>
+      <button data-filter="skills" class="filter-btn px-4 py-2 rounded-xl bg-brand-card text-brand-muted hover:text-white border border-brand-card-border transition-all whitespace-nowrap">
+        Kỹ năng chuyên ngành
+      </button>
+    </div>
+
+    <!-- Cards Container -->
+    <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Generated via JS -->
+    </div>
+  </section>
+
+  <!-- Section 6: Interactive Workflow Diagram -->
+  <section id="so-do-quy-trinh" class="max-w-7xl mx-auto px-4 py-16 z-10 relative">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-surface border border-brand-card-border text-xs text-brand-teal mb-3">
+        <span>Kiến trúc hệ thống</span>
+      </div>
+      <!-- Section Heading: ALL CAPS -->
+      <h2 class="font-heading font-black text-2xl sm:text-4xl text-white tracking-tight mb-3">
+        SƠ ĐỒ PHỐI HỢP CÁC TÁC TỬ TỰ HÀNH
+      </h2>
+      <p class="text-xs sm:text-sm text-brand-muted">
+        Minh họa quy trình sản xuất video marketing và xây dựng phần mềm tự động từ 1 câu lệnh với chuỗi Multi-Agent.
+      </p>
+    </div>
+
+    <!-- Diagram SVG Box -->
+    <div class="p-6 md:p-10 rounded-3xl bg-brand-card border border-brand-card-border relative overflow-hidden shadow-2xl">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
+        
+        <!-- Node 1 -->
+        <div class="p-5 rounded-2xl bg-brand-surface/90 border border-brand-card-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-teal/20 text-brand-teal">Bước 1</span>
+              <span class="text-xs text-brand-muted">Input</span>
+            </div>
+            <h4 class="font-bold text-white text-sm mb-1">Kịch bản & Yêu cầu</h4>
+            <p class="text-xs text-brand-muted leading-relaxed">Nhập 1 chủ đề hoặc câu lệnh từ người dùng qua Claude Code / Web.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-brand-card-border/60 text-[11px] text-brand-teal font-mono">
+            Prompt / Document
+          </div>
+        </div>
+
+        <!-- Node 2 -->
+        <div class="p-5 rounded-2xl bg-brand-surface/90 border border-brand-card-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange">Bước 2</span>
+              <span class="text-xs text-brand-muted">Analysis</span>
+            </div>
+            <h4 class="font-bold text-white text-sm mb-1">Graphify & Codebase Map</h4>
+            <p class="text-xs text-brand-muted leading-relaxed">Quét đồ thị tri thức, định vị chính xác file mẫu cần sinh, giảm 80% token.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-brand-card-border/60 text-[11px] text-brand-orange font-mono">
+            Knowledge Graph
+          </div>
+        </div>
+
+        <!-- Node 3 -->
+        <div class="p-5 rounded-2xl bg-brand-surface/90 border border-brand-card-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-teal/20 text-brand-teal">Bước 3</span>
+              <span class="text-xs text-brand-muted">Execution</span>
+            </div>
+            <h4 class="font-bold text-white text-sm mb-1">Remotion / OpenMontage</h4>
+            <p class="text-xs text-brand-muted leading-relaxed">AI viết mã React sinh hoạt họa, lồng tiếng Edge-TTS và bắt nhịp âm thanh.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-brand-card-border/60 text-[11px] text-brand-teal font-mono">
+            React Components
+          </div>
+        </div>
+
+        <!-- Node 4 -->
+        <div class="p-5 rounded-2xl bg-brand-surface/90 border border-brand-card-border flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-brand-orange/20 text-brand-orange">Bước 4</span>
+              <span class="text-xs text-brand-muted">Output</span>
+            </div>
+            <h4 class="font-bold text-white text-sm mb-1">Render MP4 & Xuất bản</h4>
+            <p class="text-xs text-brand-muted leading-relaxed">FFmpeg ghép hoàn thiện video full HD kèm phụ đề tự động và kiểm thử QA.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-brand-card-border/60 text-[11px] text-brand-orange font-mono">
+            Final Video / PR
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Quickstart Setup Guide -->
+  <section id="huong-dan-cai-dat" class="max-w-7xl mx-auto px-4 py-16 z-10 relative">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-brand-card-border">
+      <div>
+        <!-- Section Heading: ALL CAPS -->
+        <h2 class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
+          HƯỚNG DẪN CÀI ĐẶT & TÍCH HỢP SKILL
+        </h2>
+        <p class="text-xs sm:text-sm text-brand-muted">
+          Hướng dẫn tích hợp cấu hình CLAUDE.md và các kỹ năng mã nguồn mở vào dự án thực tế.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Code Tab 1 -->
+      <div class="p-6 rounded-2xl bg-brand-card border border-brand-card-border flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-brand-teal font-semibold">1. Cấu hình CLAUDE.md</span>
+            <button onclick="copyCode('claude-md-code')" class="text-xs text-brand-muted hover:text-white px-2.5 py-1 rounded bg-brand-surface border border-brand-card-border flex items-center gap-1">
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre id="claude-md-code" class="text-xs font-mono text-brand-muted bg-brand-surface/70 p-4 rounded-xl overflow-x-auto leading-relaxed border border-brand-card-border/60"><code># Quy chuẩn Dự án Lập trình
+
+- Framework: React / Next.js / TypeScript
+- Thiết kế: Áp dụng Taste Skill (giao diện thực tế, không dùng gradient tím sáo rỗng)
+- Tối ưu Token: Dùng Graphify định vị file trước khi nạp codebase
+- Quy tắc: Tự động chạy test và commit Git sau mỗi thay đổi lớn</code></pre>
+        </div>
+        <p class="text-xs text-brand-muted mt-4">
+          Đặt file này tại thư mục gốc của repo để Claude Code tự động tuân thủ mọi nguyên tắc dự án.
+        </p>
+      </div>
+
+      <!-- Code Tab 2 -->
+      <div class="p-6 rounded-2xl bg-brand-card border border-brand-card-border flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono text-brand-orange font-semibold">2. Cấu trúc đóng gói SKILL.md</span>
+            <button onclick="copyCode('skill-md-code')" class="text-xs text-brand-muted hover:text-white px-2.5 py-1 rounded bg-brand-surface border border-brand-card-border flex items-center gap-1">
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre id="skill-md-code" class="text-xs font-mono text-brand-muted bg-brand-surface/70 p-4 rounded-xl overflow-x-auto leading-relaxed border border-brand-card-border/60"><code>---
+name: ten-skill
+description: Hướng dẫn Claude khi nào nên kích hoạt kỹ năng này
+---
+
+# Quy trình Thực hiện:
+1. Đọc yêu cầu đầu vào từ người dùng
+2. Khảo sát cấu trúc tệp liên quan
+3. Thực thi theo các bước chuẩn mực đã định nghĩa</code></pre>
+        </div>
+        <p class="text-xs text-brand-muted mt-4">
+          Lưu tại thư mục <code class="text-brand-teal">.claude/skills/&lt;ten-skill&gt;/SKILL.md</code> để mở rộng kỹ năng chuyên ngành cho Agent.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 9: Footer -->
+  <footer class="border-t border-brand-card-border/80 bg-brand-card/50 py-12 px-4 z-10 relative">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div>
+        <div class="font-heading font-black text-lg text-white mb-1">
+          SKILL CLAUDE <span class="text-brand-teal">DIRECTORY</span>
+        </div>
+        <p class="text-xs text-brand-muted">
+          Tổng hợp và chia sẻ bởi cộng đồng lập trình viên AI Việt Nam. Dữ liệu từ fanpage Nghiền AI.
+        </p>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <a href="https://github.com/paultran190521-cmd/skill-claude" target="_blank" class="px-5 py-2.5 rounded-full bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold shadow-lg shadow-brand-teal/20 transition-all">
+          Đóng góp trên GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Script Inspector -->
+  <div id="script-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-card-border w-full max-w-2xl rounded-3xl p-6 sm:p-8 max-h-[85vh] flex flex-col shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-brand-card-border mb-4">
+        <div>
+          <span id="modal-tag" class="text-xs px-2.5 py-1 rounded bg-brand-teal/20 text-brand-teal font-semibold">Chuyên đề</span>
+          <h3 id="modal-title" class="font-heading font-bold text-lg text-white mt-1">Tiêu đề video</h3>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-brand-surface text-brand-muted hover:text-white flex items-center justify-center border border-brand-card-border">
+          ✕
+        </button>
+      </div>
+      
+      <div id="modal-content" class="overflow-y-auto pr-2 text-xs sm:text-sm text-brand-muted leading-relaxed space-y-4 font-normal">
+        <!-- Content injected via JS -->
+      </div>
+
+      <div class="pt-4 border-t border-brand-card-border mt-4 flex items-center justify-between">
+        <a id="modal-link" href="#" target="_blank" class="text-xs text-brand-orange hover:underline font-semibold flex items-center gap-1">
+          <span>Xem repo trên GitHub</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+        <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-brand-surface text-white text-xs font-medium hover:bg-brand-card-border transition-colors">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Copy Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-brand-teal text-white text-xs font-semibold shadow-2xl transition-all transform translate-y-20 opacity-0 flex items-center space-x-2">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-msg">Đã sao chép vào bộ nhớ đệm!</span>
+  </div>
+
+  <!-- Tools Database & Interactive Script -->
+  <script>
+    const toolsData = [
+      // Nhóm 1: Video
+      {
+        id: 'remotion',
+        name: 'Remotion',
+        category: 'video',
+        repo: 'remotion-dev/remotion',
+        url: 'https://github.com/remotion-dev/remotion',
+        stars: '~70K ⭐',
+        topStar: true,
+        desc: 'Tạo video có thể lập trình hoàn toàn bằng React, CSS và Canvas. Thay đổi file JSON là tự động xuất hàng loạt biến thể video.',
+        script: 'Viết HTML, CSS ra MP4? 70K sao GitHub không nói dối: lập trình video đang thay thế dựng thủ công. HyperFrames / Remotion cho phép tạo video bằng React, CSS và canvas. Thay đổi dữ liệu JSON là tự sinh ra hàng nghìn video biến thể mà không cần mở Premiere hay After Effects.'
+      },
+      {
+        id: 'openmontage',
+        name: 'OpenMontage',
+        category: 'video',
+        repo: 'calesthio/OpenMontage',
+        url: 'https://github.com/calesthio/OpenMontage',
+        stars: 'Nổi bật',
+        desc: 'Hệ sinh thái AI Agent sản xuất video ngắn tự động từ kịch bản, gom 12 quy trình và có trạm duyệt chi phí token trước khi render.',
+        script: 'Làm video tự động bằng code? OpenMontage: biến prompt thành video ngắn hoàn chỉnh. Tự động sinh storyboard, ghép các cảnh quay chuyển động, chèn phụ đề tự động theo nhịp nói và khớp nhạc nền không bản quyền. Dành cho dev muốn build pipeline sản xuất video ngắn hàng loạt.'
+      },
+      {
+        id: 'moneyprinter',
+        name: 'MoneyPrinterTurbo',
+        category: 'video',
+        repo: 'harry0703/MoneyPrinterTurbo',
+        url: 'https://github.com/harry0703/MoneyPrinterTurbo',
+        stars: '~25K+ ⭐',
+        desc: 'Tự động hóa kênh video ngắn: 1 câu lệnh chủ đề → AI tự viết kịch bản, tìm video b-roll, đọc voiceover tiếng Việt và gán phụ đề.',
+        script: 'Muốn làm kênh video ngắn tự động hoàn toàn? MoneyPrinterTurbo: Chỉ cần nhập 1 chủ đề hoặc từ khoá → hệ thống tự viết kịch bản bằng LLM, tự tìm video tư liệu stock footage độ nét cao, tổng hợp giọng đọc AI tiếng Việt mượt mà, canh khớp phụ đề và tự động render file MP4.'
+      },
+      {
+        id: 'shortgpt',
+        name: 'ShortGPT',
+        category: 'video',
+        repo: 'RayVentura/ShortGPT',
+        url: 'https://github.com/RayVentura/ShortGPT',
+        stars: '~11K ⭐',
+        desc: 'Framework tự động hóa video ngắn (Shorts/TikTok/Reels), tổng hợp giọng nói, căn phụ đề và render video dọc tự động.',
+        script: 'Framework tự động hóa video dạng ngắn giúp kết hợp các tài nguyên âm thanh, hình ảnh và phụ đề theo kịch bản do LLM sinh ra.'
+      },
+      {
+        id: 'video-shotcraft',
+        name: 'video-shotcraft',
+        category: 'video',
+        repo: 'Vincentwei1021/video-shotcraft',
+        url: 'https://github.com/Vincentwei1021/video-shotcraft',
+        stars: '~18.9K ⭐',
+        desc: 'Skill cho Claude Code / Codex dựng video quảng cáo sản phẩm bằng Remotion với 124 shot recipes & 150 motion presets.',
+        script: 'Một câu lệnh → Claude Code dựng cả video quảng bá sản phẩm. Chụp trang thật của bạn, vẽ từng khung hình bằng code Remotion, 124 công thức cảnh quay, cắt theo nhịp nhạc và kiểm từng khung hình.'
+      },
+      {
+        id: 'hyperframes',
+        name: 'HyperFrames',
+        category: 'video',
+        repo: 'heygen-com/hyperframes',
+        url: 'https://github.com/heygen-com/hyperframes',
+        stars: 'Trending',
+        desc: 'Viết mã HTML/CSS và Canvas động để AI Agent tự render thành video MP4 chuyển động mượt mà chất lượng cao.',
+        script: 'HyperFrames từ HeyGen cho phép dùng cú pháp web quen thuộc để lập trình khung hình video cho AI Agent.'
+      },
+      {
+        id: 'manim',
+        name: 'Manim',
+        category: 'video',
+        repo: '3b1b/manim',
+        url: 'https://github.com/3b1b/manim',
+        stars: '~75K ⭐',
+        topStar: true,
+        desc: 'Công cụ vẽ đồ họa và hoạt họa toán học/biểu đồ do 3Blue1Brown sáng lập, chuyên tạo video giải thích kiến thức khoa học.',
+        script: 'Manim là engine hoạt họa toán học bằng mã Python giúp dựng các sơ đồ, đồ thị và hình học phức tạp một cách chính xác tuyệt đối.'
+      },
+      {
+        id: 'blender-mcp',
+        name: 'Blender MCP',
+        category: 'video',
+        repo: 'ahujasid/mcp-for-blender',
+        url: 'https://github.com/ahujasid/mcp-for-blender',
+        stars: 'Nổi bật',
+        desc: 'Giao thức MCP kết nối trực tiếp AI Coding Agent vào phần mềm Blender để AI tự dựng mô hình, góc máy và render cảnh 3D.',
+        script: 'Cho phép Claude Code hoặc AI Agent điều khiển phần mềm 3D Blender qua lệnh chat để tạo mô hình và dựng phối cảnh tự động.'
+      },
+
+      // Nhóm 2: Coding Agents
+      {
+        id: 'cline',
+        name: 'Cline',
+        category: 'coding',
+        repo: 'cline/cline',
+        url: 'https://github.com/cline/cline',
+        stars: '~71.5K ⭐',
+        topStar: true,
+        desc: 'Autonomous coding agent trong VS Code/JetBrains, chạy lệnh terminal, sửa file, kiểm tra trình duyệt và hỗ trợ MCP.',
+        script: 'Cline chạy trong VS Code, JetBrains, terminal, app máy tính; tự chạy lệnh, đọc lỗi, sửa file, mở trình duyệt kiểm tra; bạn duyệt từng bước, có chế độ Plan/Act.'
+      },
+      {
+        id: 'aider',
+        name: 'Aider',
+        category: 'coding',
+        repo: 'Aider-AI/aider',
+        url: 'https://github.com/Aider-AI/aider',
+        stars: '~50.1K ⭐',
+        desc: 'Lập trình cặp ngay trong terminal, mỗi lần sửa là một commit Git sạch sẽ, có Repository Map giúp AI hiểu cả dự án lớn.',
+        script: 'Aider lập trình cặp ngay trong terminal; mỗi lần sửa là một commit Git; bản đồ codebase cho dự án lớn; hỗ trợ giọng nói và tự chạy lint/test.'
+      },
+      {
+        id: 'claude-code',
+        name: 'Claude Code',
+        category: 'coding',
+        repo: 'anthropics/claude-code',
+        url: 'https://github.com/anthropics/claude-code',
+        stars: 'Chính thức',
+        desc: 'Agent dòng lệnh chính thức từ Anthropic, tự điều tra dự án, chỉnh sửa code đa file, chạy test và tuân thủ CLAUDE.md.',
+        script: 'Công cụ CLI thế hệ mới từ Anthropic biến Claude thành kỹ sư phần mềm thực thụ làm việc trực tiếp trong terminal máy tính.'
+      },
+      {
+        id: 'devika',
+        name: 'Devika',
+        category: 'coding',
+        repo: 'stitionai/devika',
+        url: 'https://github.com/stitionai/devika',
+        stars: '~22K ⭐',
+        desc: 'Trợ lý kỹ sư phần mềm AI mã nguồn mở tự động chia nhỏ yêu cầu, viết mã, sửa lỗi cú pháp và kiểm thử liên tục.',
+        script: 'Devika là đối thủ nguồn mở của Devin, tự động phân tích bài toán, tìm kiếm tài liệu trên mạng và viết mã hoàn chỉnh.'
+      },
+      {
+        id: 'pydantic-ai',
+        name: 'PydanticAI',
+        category: 'coding',
+        repo: 'pydantic/pydantic-ai',
+        url: 'https://github.com/pydantic/pydantic-ai',
+        stars: '~10K+ ⭐',
+        desc: 'Framework xây dựng AI agent hướng dữ liệu nghiêm ngặt bằng Python, hỗ trợ chạy song song các sub-agents với tốc độ cao.',
+        script: 'Chỉ 120 dòng code Python chạy sub-agents phân tán tối ưu thời gian xử lý gấp 3 lần từ đội ngũ tác giả Pydantic.'
+      },
+      {
+        id: 'dsh-go',
+        name: 'DSH Go',
+        category: 'coding',
+        repo: 'ccch1mneyyy/dsh-Go',
+        url: 'https://github.com/ccch1mneyyy/dsh-Go',
+        stars: '~15K ⭐',
+        desc: 'App Android điều khiển DeepSeek Harness trên máy tính ở nhà từ xa qua SSH / DSH Remote an toàn, mã hóa đầu cuối.',
+        script: 'Ra đường vẫn sai AI làm việc trên máy ở nhà? DSH Go là app Android chạy agent DeepSeek Harness, chọn máy tính ở nhà trong app, giao việc như đang ngồi trước máy.'
+      },
+
+      // Nhóm 3: Token Optimization
+      {
+        id: 'graphify',
+        name: 'Graphify',
+        category: 'token',
+        repo: 'Graphify-Labs/graphify',
+        url: 'https://github.com/Graphify-Labs/graphify',
+        stars: 'Nổi bật',
+        desc: 'Quét toàn bộ repo thành Đồ thị tri thức (Knowledge Graph) bằng tree-sitter. Giúp AI chỉ nạp đúng hàm/file cần sửa, giảm 80% token.',
+        script: 'AI agent đang đốt token vì đọc lại file? Graphify vẽ cả dự án thành đồ thị tri thức. Quét toàn bộ repo mã nguồn, nhóm các file liên quan thành cụm logic dạng Graph. Khi dev hay AI agent hỏi, nó chỉ truy xuất đúng các node liên quan thay vì nhét toàn bộ codebase vào context window, giúp tiết kiệm tới 80% token và chi phí API.'
+      },
+      {
+        id: 'agentreach',
+        name: 'Agent Reach',
+        category: 'token',
+        repo: 'agentreach/agentreach',
+        url: 'https://github.com/agentreach/agentreach',
+        stars: 'Trending',
+        desc: 'Kiến trúc bộ nhớ dài hạn thế hệ mới cho AI Agent, duy trì ngữ cảnh xuyên suốt nhiều phiên làm việc mà không làm phình context window.',
+        script: 'Dự án nguồn mở của cựu kỹ sư Google giúp AI Agent duy trì ngữ cảnh và bộ nhớ xuyên suốt không giới hạn token.'
+      },
+
+      // Nhóm 4: Browser & Multi-Agent
+      {
+        id: 'browser-use',
+        name: 'Browser-Use',
+        category: 'browser',
+        repo: 'browser-use/browser-use',
+        url: 'https://github.com/browser-use/browser-use',
+        stars: '~40K+ ⭐',
+        desc: 'Thư viện điều khiển trình duyệt bằng AI: tự động click, điền form, cào dữ liệu và vượt các tác vụ đa bước bằng Vision LLM.',
+        script: 'Giao cho AI tự lướt web làm việc thay bạn. Browser-Use tự động khởi chạy Chromium, phân tích cây DOM thị giác, tự click chuột, điền form, giải quyết tác vụ nhiều bước trên web.'
+      },
+      {
+        id: 'crewai',
+        name: 'CrewAI',
+        category: 'browser',
+        repo: 'crewAIInc/crewAI',
+        url: 'https://github.com/crewAIInc/crewAI',
+        stars: '~30K+ ⭐',
+        desc: 'Nền tảng xây dựng đội ngũ Multi-Agent: phân quyền vai trò (Researcher, Writer, QA), tự trao đổi và ủy thác công việc.',
+        script: 'Xây dựng đội ngũ nhân viên AI tự làm việc cùng nhau. CrewAI thiết lập mô hình multi-agent với các vai trò chuyên biệt tự phản biện, trao đổi và bàn giao kết quả.'
+      },
+      {
+        id: 'autogen',
+        name: 'AutoGen',
+        category: 'browser',
+        repo: 'microsoft/autogen',
+        url: 'https://github.com/microsoft/autogen',
+        stars: '~40K+ ⭐',
+        desc: 'Framework của Microsoft cho phép nhiều agent hội thoại qua lại với nhau để giải quyết các bài toán kỹ thuật phức tạp.',
+        script: 'Giải pháp đa tác tử hội thoại hàng đầu thế giới từ Microsoft Research, hỗ trợ kết hợp người dùng và agent.'
+      },
+      {
+        id: 'autogpt',
+        name: 'AutoGPT',
+        category: 'browser',
+        repo: 'Significant-Gravitas/AutoGPT',
+        url: 'https://github.com/Significant-Gravitas/AutoGPT',
+        stars: '~170K ⭐',
+        topStar: true,
+        desc: 'Dự án AI Agent độc lập tiên phong tự chia nhỏ mục tiêu lớn thành chuỗi tác vụ con và thực thi không cần con người can thiệp.',
+        script: 'Một trong những dự án mã nguồn mở có tốc độ tăng trưởng sao nhanh nhất lịch sử GitHub, định hình khái niệm Autonomous Agent.'
+      },
+
+      // Nhóm 5: Local LLM
+      {
+        id: 'qwen25-coder',
+        name: 'Qwen 2.5 Coder',
+        category: 'local',
+        repo: 'QwenLM/Qwen2.5-Coder',
+        url: 'https://github.com/QwenLM/Qwen2.5-Coder',
+        stars: 'Hàng đầu',
+        desc: 'Mô hình chuyên lập trình mã nguồn mở của Alibaba, ngang ngửa Claude 3.5 Sonnet / GPT-4o, có thể tải về tự chạy.',
+        script: 'Mô hình lập trình mã nguồn mở mạnh mẽ nhất hiện nay, cho phép chạy hoàn toàn offline trên card đồ họa máy tính với hiệu năng ấn tượng.'
+      },
+      {
+        id: 'ollama',
+        name: 'Ollama',
+        category: 'local',
+        repo: 'ollama/ollama',
+        url: 'https://github.com/ollama/ollama',
+        stars: '~120K ⭐',
+        topStar: true,
+        desc: 'Công cụ chuẩn hóa việc chạy các mô hình ngôn ngữ lớn (Llama 3, DeepSeek, Qwen) cục bộ trên máy tính chỉ với 1 dòng lệnh.',
+        script: 'Rút dây mạng, AI vẫn trả lời bình thường. Cài đặt Ollama để chạy các mô hình nguồn mở trực tiếp trên máy tính, bảo mật tuyệt đối.'
+      },
+      {
+        id: 'llamacpp',
+        name: 'llama.cpp',
+        category: 'local',
+        repo: 'ggerganov/llama.cpp',
+        url: 'https://github.com/ggerganov/llama.cpp',
+        stars: '~80K ⭐',
+        topStar: true,
+        desc: 'Engine suy luận LLM bằng C/C++ thuần túy, tối ưu hóa lượng tử GGUF để chạy mượt mà trên CPU và GPU máy tính cá nhân.',
+        script: 'Trái tim của hệ sinh thái Local AI toàn cầu, cho phép chạy mô hình ngôn ngữ lớn với dung lượng RAM tối thiểu.'
+      },
+
+      // Nhóm 6: UI Design
+      {
+        id: 'taste-skill',
+        name: 'Taste Skill',
+        category: 'ui',
+        repo: 'Leonxlnx/taste-skill',
+        url: 'https://github.com/Leonxlnx/taste-skill',
+        stars: '~115K ⭐',
+        topStar: true,
+        desc: 'Kỹ năng thẩm mỹ cho coding agent: dạy AI dựng trang web có gu thiết kế thực tế, loại bỏ gradient tím sáo rỗng.',
+        script: 'Nhờ AI làm giao diện mà trang nào cũng gradient tím, chữ phát sáng? Taste Skill dạy agent dựng trang có gu, ảnh thật, kiểm trên trình duyệt.'
+      },
+      {
+        id: 'hallmark',
+        name: 'Hallmark',
+        category: 'ui',
+        repo: 'Nutlope/hallmark',
+        url: 'https://github.com/Nutlope/hallmark',
+        stars: '~54.5K ⭐',
+        desc: 'Bộ quy chuẩn của Together AI: tích hợp 50 phong cách thiết kế hiện đại và bộ soát lỗi tự động phát hiện "dấu hiệu lộ là AI làm".',
+        script: 'Hallmark từ Together AI cung cấp 50 phong cách thiết kế chuẩn mực và tự động soát lỗi AI slop trước khi xuất bản.'
+      },
+
+      // Nhóm 7: Data & API
+      {
+        id: 'data-analysis-agent',
+        name: 'Data Analysis Agent',
+        category: 'data',
+        repo: 'Zafer-Liu/Data-Analysis-Agent',
+        url: 'https://github.com/Zafer-Liu/Data-Analysis-Agent',
+        stars: '~2.6K ⭐',
+        desc: 'Tác tử AI phân tích số liệu: Đọc file Excel/CSV, nối SQL, tự viết truy vấn, vẽ 41 dạng biểu đồ và xuất file PPT/Word/Excel.',
+        script: 'Không rành SQL hay công thức Excel? Gõ câu hỏi, AI tự làm biểu đồ + báo cáo. Đọc Excel, kết nối MySQL/Postgres, tự viết truy vấn và xuất PPT.'
+      },
+      {
+        id: 'reverse-api-engineer',
+        name: 'Reverse API Engineer (rae)',
+        category: 'data',
+        repo: 'kalil0321/reverse-api-engineer',
+        url: 'https://github.com/kalil0321/reverse-api-engineer',
+        stars: '~3.6K ⭐',
+        desc: 'Dò quét lưu lượng mạng ngầm của website, bóc tách endpoint nội bộ và tự sinh mã Client SDK trên 10 ngôn ngữ.',
+        script: 'Trang web nào cũng gọi API ngầm — để AI tìm ra và viết sẵn code gọi nó. Mô tả dữ liệu → AI tự lướt trang, ghi lưu lượng mạng và sinh file client.'
+      },
+      {
+        id: 'craft-anything',
+        name: 'Craft Anything',
+        category: 'data',
+        repo: 'storytold/craft-anything',
+        url: 'https://github.com/storytold/craft-anything',
+        stars: '~20K ⭐',
+        desc: 'Tái tạo web/game theo nguyên tắc "phòng sạch" bằng Rust + Claude Code, tự sinh logic và đo độ tương đồng so với bản gốc.',
+        script: 'Muốn biết một trang web hay trò chơi được làm thế nào? Craft Anything giúp tự làm lại nó theo phương pháp phòng sạch.'
+      },
+
+      // Nhóm 8: Self-Hosted
+      {
+        id: 'upscayl',
+        name: 'Upscayl',
+        category: 'selfhost',
+        repo: 'upscayl/upscayl',
+        url: 'https://github.com/upscayl/upscayl',
+        stars: '~52.5K ⭐',
+        desc: 'Phóng to & làm nét ảnh bằng AI miễn phí gấp 4 lần, xử lý offline trên GPU máy tính qua Vulkan, không lộ hình ảnh lên mạng.',
+        script: 'Ảnh cũ bé tí, vỡ hạt? Upscayl phóng to & làm nét bằng AI miễn phí, xử lý ngay trên card đồ hoạ máy tính, không gửi ảnh lên mạng.'
+      },
+      {
+        id: 'resume-matcher',
+        name: 'Resume Matcher',
+        category: 'selfhost',
+        repo: 'srbhr/Resume-Matcher',
+        url: 'https://github.com/srbhr/Resume-Matcher',
+        stars: '~29.3K ⭐',
+        desc: 'Khớp CV với JD chấm điểm theo thang 100 để vượt qua hệ thống lọc ATS, chạy được offline bằng Ollama.',
+        script: 'Gửi 1 CV cho mọi công việc? Resume Matcher giúp 1 CV gốc được AI sửa riêng cho từng tin tuyển dụng, chỉ ra từ khoá còn thiếu để qua bộ lọc ATS.'
+      },
+      {
+        id: 'sure',
+        name: 'Sure (Maybe fork)',
+        category: 'selfhost',
+        repo: 'we-promise/sure',
+        url: 'https://github.com/we-promise/sure',
+        stars: '~15K ⭐',
+        desc: 'Quản lý tài chính cá nhân tự host mã nguồn mở kế thừa Maybe Finance, theo dõi dòng tiền, tài sản ròng qua Docker.',
+        script: 'Bản cộng đồng tiếp nối Maybe, ứng dụng tài chính cá nhân từng tốn gần 1 triệu USD, quản lý dòng tiền và tài sản tự host bảo mật.'
+      },
+      {
+        id: 'securo',
+        name: 'Securo',
+        category: 'selfhost',
+        repo: 'securo-finance/securo',
+        url: 'https://github.com/securo-finance/securo',
+        stars: '~4.5K ⭐',
+        desc: 'Ứng dụng lập ngân sách và chi tiêu cá nhân tự host bảo mật, tự động phân loại giao dịch từ sao kê CSV/OFX/QIF.',
+        script: 'Quản lý ngân sách, mục tiêu, khoản định kỳ, khoản vay, xem chi tiêu theo lịch tự host bằng Docker dữ liệu trên máy bạn.'
+      },
+      {
+        id: 'twenty',
+        name: 'Twenty CRM',
+        category: 'selfhost',
+        repo: 'twentyhq/twenty',
+        url: 'https://github.com/twentyhq/twenty',
+        stars: '~30K+ ⭐',
+        desc: 'Hệ thống CRM mã nguồn mở hiện đại thay thế Salesforce / HubSpot, giao diện đẹp mắt, tự quản lý dữ liệu trên server riêng.',
+        script: 'Hệ thống quản trị quan hệ khách hàng mã nguồn mở số 1 hiện nay với giao diện hiện đại và tính năng tự động hóa mạnh mẽ.'
+      },
+      {
+        id: 'anything-llm',
+        name: 'AnythingLLM',
+        category: 'selfhost',
+        repo: 'mintplex-labs/anything-llm',
+        url: 'https://github.com/mintplex-labs/anything-llm',
+        stars: '~35K+ ⭐',
+        desc: 'Dựng ChatGPT riêng tư cho doanh nghiệp (RAG), phân quyền theo phòng ban, kết nối PDF/Docx/Notion an toàn.',
+        script: 'Giải pháp RAG nội bộ bảo mật, phân quyền truy cập theo phòng ban, chạy hoàn toàn on-premise cho công ty.'
+      },
+      {
+        id: 'feedlog',
+        name: 'FeedLog',
+        category: 'selfhost',
+        repo: 'linkcraftstudio/feedlog',
+        url: 'https://github.com/linkcraftstudio/feedlog',
+        stars: 'Nổi bật',
+        desc: 'Hệ thống AI chăm sóc khách hàng tự động theo tài liệu trợ giúp nội bộ và quản lý lộ trình sản phẩm công khai.',
+        script: 'Gắn khung chat vào sản phẩm → AI trả lời theo trang trợ giúp do bạn viết, gom góp ý và gộp yêu cầu trùng thành roadmap công khai.'
+      },
+
+      // Nhóm 9: Skills
+      {
+        id: 'earshot',
+        name: 'Earshot MCP',
+        category: 'skills',
+        repo: 'Leonxlnx/earshot',
+        url: 'https://github.com/Leonxlnx/earshot',
+        stars: '~4.5K ⭐',
+        desc: 'Gắn "tai nghe" cho Claude Code để phân tích âm thanh, tìm đoạn nhạc khớp với video và lập trình hiệu ứng âm thanh.',
+        script: 'AI viết được code dựng cả video, nhưng chưa từng nghe âm thanh nó làm ra. Earshot gắn vào Claude Code qua MCP giúp nghe, chấm điểm khớp nhịp và tự làm âm thanh bằng code.'
+      },
+      {
+        id: 'marketingskills',
+        name: 'Marketing Skills',
+        category: 'skills',
+        repo: 'coreyhaines31/marketingskills',
+        url: 'https://github.com/coreyhaines31/marketingskills',
+        stars: '~57.6K ⭐',
+        desc: 'Bộ sưu tập 53 kỹ năng marketing đóng gói sẵn cho Claude Code, Cursor, Codex (viết copywriting, SEO, email launch).',
+        script: 'Bộ 53 kỹ năng marketing chuyên nghiệp mã nguồn mở đóng gói sẵn cho Claude Code, Codex, Cursor.'
+      },
+      {
+        id: 'founder-skill',
+        name: 'Founder Skill',
+        category: 'skills',
+        repo: 'Jakeschincariol/founder-skill',
+        url: 'https://github.com/Jakeschincariol/founder-skill',
+        stars: 'Nổi bật',
+        desc: '11 kỹ năng thẩm định dự án khởi nghiệp với hội đồng ảo, 100 khách hàng ảo và giám đốc tài chính mô phỏng.',
+        script: '11 kỹ năng thẩm định dự án cho Claude với hội đồng ảo, 100 khách hàng ảo và giám đốc tài chính mô phỏng phản biện ý tưởng.'
+      },
+      {
+        id: 'podcastfy',
+        name: 'Podcastfy',
+        category: 'skills',
+        repo: 'souzatharsis/podcastfy',
+        url: 'https://github.com/souzatharsis/podcastfy',
+        stars: 'Trending',
+        desc: 'Tự động chuyển đổi tài liệu văn bản, sách, bài viết thành tập podcast đối thoại 2 người dẫn chuyện tự nhiên.',
+        script: 'Biến tài liệu văn bản thành tập podcast đối thoại 2 người dẫn chuyện tự nhiên bằng AI.'
+      },
+      {
+        id: 'genoffice',
+        name: 'GenOffice',
+        category: 'skills',
+        repo: 'genoffice/genoffice',
+        url: 'https://github.com/genoffice/genoffice',
+        stars: 'Nổi bật',
+        desc: 'Tự động sinh bài thuyết trình PowerPoint và tài liệu báo cáo văn phòng đẹp mắt trực tiếp từ kịch bản AI.',
+        script: 'Tự động sinh slide báo cáo thuyết trình văn phòng đẹp mắt từ kịch bản AI.'
+      },
+      {
+        id: 'mika',
+        name: 'Mika Handheld',
+        category: 'skills',
+        repo: 'mika-handheld/mika',
+        url: 'https://github.com/mika-handheld/mika',
+        stars: 'DIY AI',
+        desc: 'Bản thiết kế phần cứng và phần mềm mã nguồn mở để tự chế máy trợ lý giọng nói AI cầm tay.',
+        script: 'Tự chế thiết bị trợ lý ảo AI cầm tay tương tác giọng nói như trong phim Her với phần cứng nguồn mở.'
+      }
+    ];
+
+    const categoryNames = {
+      all: 'Tất cả',
+      video: 'Dựng video tự động',
+      coding: 'Coding agents',
+      token: 'Tối ưu token & bộ nhớ',
+      browser: 'Browser automation',
+      local: 'Mô hình local offline',
+      ui: 'Thiết kế UI có gu',
+      data: 'Dữ liệu & Reverse API',
+      selfhost: 'Ứng dụng tự host',
+      skills: 'Kỹ năng chuyên ngành'
+    };
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    function renderTools() {
+      const container = document.getElementById('tools-grid');
+      const filtered = toolsData.filter(item => {
+        const matchCategory = currentFilter === 'all' || item.category === currentFilter;
+        const q = searchQuery.toLowerCase().trim();
+        const matchSearch = !q || 
+          item.name.toLowerCase().includes(q) || 
+          item.desc.toLowerCase().includes(q) || 
+          item.repo.toLowerCase().includes(q) ||
+          item.script.toLowerCase().includes(q);
+        return matchCategory && matchSearch;
+      });
+
+      document.getElementById('results-count').innerText = `${filtered.length} công cụ`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-brand-muted">
+            <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm font-medium">Không tìm thấy công cụ nào phù hợp với từ khóa của bạn.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const topStarClass = item.topStar ? 'top-star-halo' : '';
+        const starBadgeColor = item.topStar ? 'bg-brand-orange/20 text-brand-orange border-brand-orange/40' : 'bg-brand-surface text-brand-teal border-brand-card-border';
+        
+        return `
+          <div class="spotlight-card ${topStarClass} p-6 rounded-2xl border border-brand-card-border flex flex-col justify-between group">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <span class="text-[11px] font-semibold text-brand-teal uppercase tracking-wider">${categoryNames[item.category] || item.category}</span>
+                  <h3 class="font-heading font-extrabold text-lg text-white group-hover:text-brand-teal transition-colors mt-0.5">
+                    ${item.name}
+                  </h3>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full border ${starBadgeColor} font-mono font-semibold whitespace-nowrap">
+                  ${item.stars}
+                </span>
+              </div>
+
+              <p class="text-xs text-brand-muted leading-relaxed mb-6 font-normal line-clamp-3">
+                ${item.desc}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-brand-card-border/60 flex items-center justify-between gap-2">
+              <button onclick="openModal('${item.id}')" class="text-xs text-brand-muted hover:text-white px-3 py-1.5 rounded-lg bg-brand-surface border border-brand-card-border transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <span>Xem script</span>
+              </button>
+
+              <div class="flex items-center space-x-1.5">
+                <button onclick="copyText('git clone ${item.url}.git')" title="Sao chép lệnh clone" class="text-xs p-2 rounded-lg bg-brand-surface text-brand-muted hover:text-white border border-brand-card-border transition-colors">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </button>
+                <a href="${item.url}" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-semibold flex items-center gap-1 transition-all shadow-md shadow-brand-teal/20">
+                  <span>GitHub</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      initSpotlightCards();
+    }
+
+    // Dynamic mouse spotlight handler
+    function initSpotlightCards() {
+      const cards = document.querySelectorAll('.spotlight-card');
+      cards.forEach(card => {
+        card.onmousemove = e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        };
+      });
+    }
+
+    // Modal logic
+    function openModal(toolId) {
+      const tool = toolsData.find(t => t.id === toolId);
+      if (!tool) return;
+      document.getElementById('modal-tag').innerText = categoryNames[tool.category] || tool.category;
+      document.getElementById('modal-title').innerText = `${tool.name} — Kịch bản video gốc`;
+      document.getElementById('modal-content').innerHTML = `
+        <div class="p-4 rounded-xl bg-brand-surface/80 border border-brand-card-border mb-3 font-mono text-xs text-brand-teal">
+          Repo: ${tool.repo} (${tool.stars})
+        </div>
+        <p class="text-white text-xs sm:text-sm leading-relaxed">${tool.script}</p>
+        <div class="p-4 rounded-xl bg-brand-dark/50 border border-brand-card-border/60">
+          <div class="text-[11px] text-brand-muted uppercase font-bold mb-1">Ứng dụng thực tế:</div>
+          <div class="text-xs text-brand-muted leading-relaxed">${tool.desc}</div>
+        </div>
+      `;
+      document.getElementById('modal-link').href = tool.url;
+      const modal = document.getElementById('script-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('script-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Toast & Copy
+    function copyText(text) {
+      navigator.clipboard.writeText(text);
+      showToast('Đã sao chép lệnh clone Git!');
+    }
+
+    function copyCode(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text);
+      showToast('Đã sao chép nội dung cấu hình!');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTools();
+
+      // Search
+      document.getElementById('search-input').addEventListener('input', e => {
+        searchQuery = e.target.value;
+        renderTools();
+      });
+
+      // Filter tabs
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('bg-brand-teal', 'text-white', 'border-brand-teal', 'shadow-md', 'shadow-brand-teal/20');
+            b.classList.add('bg-brand-card', 'text-brand-muted', 'border-brand-card-border');
+          });
+          btn.classList.add('bg-brand-teal', 'text-white', 'border-brand-teal', 'shadow-md', 'shadow-brand-teal/20');
+          btn.classList.remove('bg-brand-card', 'text-brand-muted', 'border-brand-card-border');
+          currentFilter = btn.dataset.filter;
+          renderTools();
+        });
+      });
+
+      // Background Beams Canvas
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = Array.from({ length: 45 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 1.5 + 0.5,
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(25, 146, 176, 0.4)';
+        ctx.strokeStyle = 'rgba(25, 146, 176, 0.08)';
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+            if (dist < 130) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    });
+  </script>
+</body>
+</html>
